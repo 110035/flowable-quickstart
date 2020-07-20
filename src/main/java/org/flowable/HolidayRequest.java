@@ -146,9 +146,15 @@ public class HolidayRequest {
         boolean approved = scanner.nextLine().equalsIgnoreCase("y");
         variables = new HashMap<>();
         variables.put("approved", approved);
-        taskService.claim(task.getId(), "manager" );
+        taskService.claim(task.getId(), "manager");
         taskService.complete(task.getId(), variables);
 
+        boolean allTaskFinished = taskService.createTaskQuery()
+                .processInstanceId(task.getProcessInstanceId())
+                .taskDefinitionKey(task.getTaskDefinitionKey())
+                .active()
+                .list().size() == 0;
+        System.out.println("all task get finished? " + allTaskFinished);
 
         //Query Historical data (audit data) to detect how the organization works,
         //or detect bottlenecks etc.
@@ -166,7 +172,7 @@ public class HolidayRequest {
         for (HistoricActivityInstance activity : activities) {
             Date d = new Date(task.getCreateTime().getTime() + activity.getDurationInMillis());
             System.out.println(activity.getActivityId() + " took "
-                    + activity.getDurationInMillis() + " milliseconds by "+activity.getAssignee()+", runs at " + sdf.format(d));
+                    + activity.getDurationInMillis() + " milliseconds by " + activity.getAssignee() + ", runs at " + sdf.format(d));
         }
 
         InputStream stream = genProcessDiagram(processInstance.getId(), processEngine);
@@ -189,7 +195,7 @@ public class HolidayRequest {
 
 
     private static InputStream genProcessDiagram(String processInstanceId, ProcessEngine processEngine) {
-        System.out.println("genProcessDiagram, processInstanceId="+processInstanceId);
+        System.out.println("genProcessDiagram, processInstanceId=" + processInstanceId);
         HistoryService historyService = processEngine.getHistoryService();
         RepositoryService repositoryService = processEngine.getRepositoryService();
         RuntimeService runtimeService = processEngine.getRuntimeService();
@@ -206,9 +212,6 @@ public class HolidayRequest {
             String activityId = tempActivity.getActivityId();
             highLightedActivities.add(activityId);
         }
-
-
-
 
 
         HistoricProcessInstance his = historyService.createHistoricProcessInstanceQuery().processInstanceId(processInstanceId).singleResult();
