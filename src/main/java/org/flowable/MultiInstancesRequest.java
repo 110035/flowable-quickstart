@@ -1,16 +1,17 @@
 package org.flowable;
 
 import org.flowable.engine.*;
+import org.flowable.engine.history.HistoricActivityInstance;
 import org.flowable.engine.impl.cfg.StandaloneProcessEngineConfiguration;
 import org.flowable.engine.repository.Deployment;
 import org.flowable.engine.repository.ProcessDefinition;
 import org.flowable.engine.runtime.ProcessInstance;
 import org.flowable.engine.task.Task;
+import util.ProcessDiagram;
 
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 /**
  * Created by sunjianfei on 2020/7/20.
@@ -79,8 +80,9 @@ public class MultiInstancesRequest {
 
 
 
-        List<Task> tasks = taskService.createTaskQuery().taskCandidateUser("shareniu4").list();
-        System.out.println("shareniu4 have " + tasks.size() + " tasks:");
+        List<Task> tasks;
+        tasks = taskService.createTaskQuery().taskCandidateUser("shareniu4").list();
+
         taskService.claim(tasks.get(0).getId(),"shareniu4");
         taskService.complete(tasks.get(0).getId());
 
@@ -93,9 +95,53 @@ public class MultiInstancesRequest {
         System.out.println("all task get finished? " + allTaskFinished);
 
 
+        tasks = taskService.createTaskQuery().taskCandidateUser("shareniu3").list();
+
+        taskService.claim(tasks.get(0).getId(),"shareniu3");
+        taskService.complete(tasks.get(0).getId());
+
+
+        allTaskFinished = taskService.createTaskQuery()
+                .processInstanceId(list.get(0).getProcessInstanceId())
+                .taskDefinitionKey(list.get(0).getTaskDefinitionKey())
+                .active()
+                .list().size() == 0;
+        System.out.println("all task get finished? " + allTaskFinished);
 
 
 
+
+        String strDateFormat = "yyyy-MM-dd HH:mm:ss";
+        SimpleDateFormat sdf = new SimpleDateFormat(strDateFormat);
+        HistoryService historyService = processEngine.getHistoryService();
+        List<HistoricActivityInstance> activities ;
+
+
+        List<Task> task2 = taskService.createTaskQuery().taskAssignee("shareniu5").list();
+
+        System.out.println("shareniu5 tasks num = ? " + task2.size());
+
+        taskService.claim(task2.get(0).getId(),"shareniu5");
+        taskService.complete(task2.get(0).getId());
+
+
+        activities =
+                historyService.createHistoricActivityInstanceQuery()
+                        .processInstanceId(pi.getId())
+                        .finished()
+                        .orderByHistoricActivityInstanceEndTime().asc()
+                        .list();
+
+        for (HistoricActivityInstance activity : activities) {
+            Date d = new Date(list.get(0).getCreateTime().getTime() + activity.getDurationInMillis());
+            System.out.println(activity.getActivityId() + " took "
+                    + activity.getDurationInMillis() + " milliseconds by " + activity.getAssignee() + ", runs at " + sdf.format(d));
+        }
+
+
+
+
+        ProcessDiagram.genProcessDiagram(pi.getId(), processEngine,"file-muti.png");
 
 
 

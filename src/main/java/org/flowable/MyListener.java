@@ -25,7 +25,11 @@ public class MyListener implements TaskListener {
 
         // 获取配置的表达式
         Set<IdentityLink> candidates = delegateTask.getCandidates();
-        System.out.println("assignExpression =  " + candidates);
+        System.out.println("getCandidates =  " + candidates);
+
+        // 获取配置的表达式
+        String assignee = delegateTask.getAssignee();
+        System.out.println("getAssignee =  " + assignee);
 
 
 

@@ -1,17 +1,15 @@
 package org.flowable;
 
-import org.flowable.bpmn.model.BpmnModel;
 import org.flowable.engine.*;
 import org.flowable.engine.history.HistoricActivityInstance;
-import org.flowable.engine.history.HistoricProcessInstance;
 import org.flowable.engine.impl.cfg.StandaloneProcessEngineConfiguration;
 import org.flowable.engine.repository.Deployment;
 import org.flowable.engine.repository.ProcessDefinition;
 import org.flowable.engine.runtime.ProcessInstance;
 import org.flowable.engine.task.Task;
-import org.flowable.image.impl.DefaultProcessDiagramGenerator;
+import util.ProcessDiagram;
 
-import java.io.*;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -175,56 +173,11 @@ public class HolidayRequest {
                     + activity.getDurationInMillis() + " milliseconds by " + activity.getAssignee() + ", runs at " + sdf.format(d));
         }
 
-        InputStream stream = genProcessDiagram(processInstance.getId(), processEngine);
-        OutputStream fos = new FileOutputStream("file-new.png");
-        // 将输入流is写入文件输出流fos中
-        int ch = 0;
-        try {
-            while ((ch = stream.read()) != -1) {
-                fos.write(ch);
-            }
-        } catch (IOException e1) {
-            e1.printStackTrace();
-        } finally {
-            //关闭输入流等（略）
-            fos.close();
-            stream.close();
-        }
+        ProcessDiagram.genProcessDiagram(processInstance.getId(), processEngine,"file-holiday.png");
+
         scanner.close();
     }
 
 
-    private static InputStream genProcessDiagram(String processInstanceId, ProcessEngine processEngine) {
-        System.out.println("genProcessDiagram, processInstanceId=" + processInstanceId);
-        HistoryService historyService = processEngine.getHistoryService();
-        RepositoryService repositoryService = processEngine.getRepositoryService();
-        RuntimeService runtimeService = processEngine.getRuntimeService();
 
-
-        List<String> highLightedActivities = new ArrayList<String>();
-
-        /**
-         * 获得活动的节点
-         */
-        List<HistoricActivityInstance> highLightedActivitList = historyService.createHistoricActivityInstanceQuery().processInstanceId(processInstanceId).finished().orderByHistoricActivityInstanceStartTime().asc().list();
-
-        for (HistoricActivityInstance tempActivity : highLightedActivitList) {
-            String activityId = tempActivity.getActivityId();
-            highLightedActivities.add(activityId);
-        }
-
-
-        HistoricProcessInstance his = historyService.createHistoricProcessInstanceQuery().processInstanceId(processInstanceId).singleResult();
-        BpmnModel bpmnModel = repositoryService.getBpmnModel(his.getProcessDefinitionId());
-
-        DefaultProcessDiagramGenerator defaultProcessDiagramGenerator = new DefaultProcessDiagramGenerator();
-
-        List<String> highLightedFlows = new ArrayList<String>();
-        //防止图片乱码
-        InputStream in = defaultProcessDiagramGenerator.generateDiagram(bpmnModel, "png", highLightedActivities,
-                highLightedFlows, "宋体", "宋体", "宋体", null, 1.0);
-        return in;
-
-
-    }
 }
