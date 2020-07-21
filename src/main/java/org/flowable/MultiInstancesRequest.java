@@ -27,7 +27,8 @@ public class MultiInstancesRequest {
                         .setJdbcPassword("")
                         .setJdbcDriver("org.h2.Driver")
                         .setDatabaseSchemaUpdate(
-                                ProcessEngineConfiguration.DB_SCHEMA_UPDATE_TRUE);
+                                ProcessEngineConfiguration.DB_SCHEMA_UPDATE_TRUE)
+                        .setMailServerHost("mail.test.b2c.srv").setMailServerPort(25);
 
         ProcessEngine processEngine = cfg.buildProcessEngine();
 

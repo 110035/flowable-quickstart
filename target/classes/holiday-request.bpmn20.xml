@@ -13,6 +13,7 @@
         </exclusiveGateway>
         <serviceTask id="externalSystemCall" name="人事系统扣除年假" flowable:class="org.flowable.CallExternalSystemDelegate"></serviceTask>
 
+        <!--<serviceTask id="sendRejectionMail" name="发出驳回邮件" flowable:class="org.flowable.SendRejectionMailDelegate"></serviceTask>-->
         <serviceTask id="sendRejectionMail" name="发出驳回邮件" flowable:class="org.flowable.SendRejectionMailDelegate"></serviceTask>
         <sequenceFlow id="sequenceFlow-15106a75-7e61-4532-a756-f24bfb554ac6" sourceRef="sendRejectionMail" targetRef="rejectEnd"></sequenceFlow>
         <endEvent id="approveEnd" name="完成"></endEvent>

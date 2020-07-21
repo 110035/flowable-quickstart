@@ -5,7 +5,7 @@
         <startEvent id="Start" name="开始" flowable:formFieldValidation="true"></startEvent>
         <userTask id="UserTask1" name="会签用户任务1" flowable:candidateUsers="${assigneeList}" flowable:formFieldValidation="true">
             <multiInstanceLoopCharacteristics isSequential="false" flowable:collection="assigneeList" flowable:elementVariable="assignee">
-                <completionCondition>${nrOfCompletedInstances/nrOfInstances >= 0.4}</completionCondition>
+                <completionCondition>${nrOfCompletedInstances/nrOfInstances &gt;= 0.4}</completionCondition>
             </multiInstanceLoopCharacteristics>
         </userTask>
         <userTask id="UserTask2" name="用户任务2" flowable:assignee="shareniu5" flowable:formFieldValidation="true">
@@ -14,15 +14,33 @@
                 <modeler:initiator-can-complete xmlns:modeler="http://flowable.org/modeler"><![CDATA[false]]></modeler:initiator-can-complete>
             </extensionElements>
         </userTask>
-        <endEvent id="End"></endEvent>
-        <sequenceFlow id="U2-E" sourceRef="UserTask2" targetRef="End"></sequenceFlow>
         <sequenceFlow id="S-U1" sourceRef="Start" targetRef="UserTask1"></sequenceFlow>
         <sequenceFlow id="U1-U2" sourceRef="UserTask1" targetRef="UserTask2"></sequenceFlow>
-        <textAnnotation id="sid-AE9CE34E-E77F-440C-9BD6-DAEA9F825828"></textAnnotation>
-        <association id="sid-30E09D77-D86F-4F65-B4A6-36BF5F89BD18" sourceRef="UserTask2" targetRef="sid-AE9CE34E-E77F-440C-9BD6-DAEA9F825828" associationDirection="None"></association>
+        <sequenceFlow id="sid-D0E8F205-05EF-4218-BA51-4F07C3B6F2C9" sourceRef="UserTask2" targetRef="Send-Email"></sequenceFlow>
+        <endEvent id="End" name="结束"></endEvent>
+        <sequenceFlow id="sid-0BD786DF-9AC5-4A0B-9522-059853162773" sourceRef="Send-Email" targetRef="End"></sequenceFlow>
+        <serviceTask id="Send-Email" flowable:type="mail" name="发送邮件通知">
+            <extensionElements>
+                <flowable:field name="from">
+                    <flowable:string><![CDATA[134a1ab8c0efbe14884b9956321818e0@xiaomi.com]]></flowable:string>
+                </flowable:field>
+                <flowable:field name="to">
+                    <flowable:string><![CDATA[sunjianfei@xiaomi.com]]></flowable:string>
+                </flowable:field>
+                <flowable:field name="subject">
+                    <flowable:expression><![CDATA[审批通过了]]></flowable:expression>
+                </flowable:field>
+                <flowable:field name="charset">
+                    <flowable:string><![CDATA[UTF-8]]></flowable:string>
+                </flowable:field>
+                <flowable:field name="html">
+                    <flowable:string><![CDATA[<button>嘿嘿，成功了</button>]]></flowable:string>
+                </flowable:field>
+            </extensionElements>
+        </serviceTask>
     </process>
     <bpmndi:BPMNDiagram id="BPMNDiagram_living">
-        <bpmndi:BPMNPlane bpmnElement="living" id="BPMNPlane_living">
+        <bpmndi:BPMNPlane bpmnElement="living" id="BPMNPlane_living2">
             <bpmndi:BPMNShape bpmnElement="Start" id="BPMNShape_Start">
                 <omgdc:Bounds height="30.0" width="30.0" x="120.0" y="105.0"></omgdc:Bounds>
             </bpmndi:BPMNShape>
@@ -33,13 +51,10 @@
                 <omgdc:Bounds height="60.0" width="100.0" x="350.0" y="90.0"></omgdc:Bounds>
             </bpmndi:BPMNShape>
             <bpmndi:BPMNShape bpmnElement="End" id="BPMNShape_End">
-                <omgdc:Bounds height="28.0" width="28.0" x="500.0" y="105.0"></omgdc:Bounds>
+                <omgdc:Bounds height="28.0" width="28.0" x="640.0" y="106.0"></omgdc:Bounds>
             </bpmndi:BPMNShape>
-            <bpmndi:BPMNShape bpmnElement="sid-AE9CE34E-E77F-440C-9BD6-DAEA9F825828" id="BPMNShape_sid-AE9CE34E-E77F-440C-9BD6-DAEA9F825828">
-                <omgdc:Bounds height="50.0" width="100.0" x="495.0" y="95.0"></omgdc:Bounds>
-            </bpmndi:BPMNShape>
-            <bpmndi:BPMNShape bpmnElement="sid-30E09D77-D86F-4F65-B4A6-36BF5F89BD18" id="BPMNShape_sid-30E09D77-D86F-4F65-B4A6-36BF5F89BD18">
-                <omgdc:Bounds height="0.45573029685536426" width="43.75010849811497" x="450.4999457509425" y="119.01822860157232"></omgdc:Bounds>
+            <bpmndi:BPMNShape bpmnElement="Send-Email" id="BPMNShape_Send-Email">
+                <omgdc:Bounds height="80.0" width="100.0" x="495.0" y="80.0"></omgdc:Bounds>
             </bpmndi:BPMNShape>
             <bpmndi:BPMNEdge bpmnElement="S-U1" id="BPMNEdge_S-U1">
                 <omgdi:waypoint x="149.9499750044467" y="120.0"></omgdi:waypoint>
@@ -47,15 +62,13 @@
                 <omgdi:waypoint x="162.0" y="120.0"></omgdi:waypoint>
                 <omgdi:waypoint x="200.0" y="120.0"></omgdi:waypoint>
             </bpmndi:BPMNEdge>
-            <bpmndi:BPMNEdge bpmnElement="U2-E" id="BPMNEdge_U2-E">
+            <bpmndi:BPMNEdge bpmnElement="sid-D0E8F205-05EF-4218-BA51-4F07C3B6F2C9" id="BPMNEdge_sid-D0E8F205-05EF-4218-BA51-4F07C3B6F2C9">
                 <omgdi:waypoint x="449.95000000000005" y="120.0"></omgdi:waypoint>
-                <omgdi:waypoint x="462.0" y="120.0"></omgdi:waypoint>
-                <omgdi:waypoint x="462.0" y="120.0"></omgdi:waypoint>
-                <omgdi:waypoint x="500.0025321198765" y="119.26822082569018"></omgdi:waypoint>
+                <omgdi:waypoint x="494.9999999999252" y="120.0"></omgdi:waypoint>
             </bpmndi:BPMNEdge>
-            <bpmndi:BPMNEdge bpmnElement="sid-30E09D77-D86F-4F65-B4A6-36BF5F89BD18" id="BPMNEdge_sid-30E09D77-D86F-4F65-B4A6-36BF5F89BD18">
-                <omgdi:waypoint x="449.95000000000005" y="119.47916666666667"></omgdi:waypoint>
-                <omgdi:waypoint x="494.99999999999955" y="119.00989583333332"></omgdi:waypoint>
+            <bpmndi:BPMNEdge bpmnElement="sid-0BD786DF-9AC5-4A0B-9522-059853162773" id="BPMNEdge_sid-0BD786DF-9AC5-4A0B-9522-059853162773">
+                <omgdi:waypoint x="594.9499999999791" y="120.0"></omgdi:waypoint>
+                <omgdi:waypoint x="640.0" y="120.0"></omgdi:waypoint>
             </bpmndi:BPMNEdge>
             <bpmndi:BPMNEdge bpmnElement="U1-U2" id="BPMNEdge_U1-U2">
                 <omgdi:waypoint x="299.95000000000005" y="120.0"></omgdi:waypoint>
