@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="BPMNEditorStateService">
-    <stateFile url="file://$PROJECT_DIR$/src/main/resources/mutilInstances-request.bpmn20.xml">
+    <stateFile url="file://$PROJECT_DIR$/src/main/resources/sub-process.bpmn20.xml">
       <view grid="false" />
     </stateFile>
   </component>

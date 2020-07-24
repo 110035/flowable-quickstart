@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:flowable="http://flowable.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.flowable.org/processdef">
+    <process id="XMSubProcessUS" name="TestsubProcessUS" isExecutable="true">
+        <documentation>子流程</documentation>
+        <startEvent id="Start" name="开始" flowable:formFieldValidation="true"></startEvent>
+        <userTask id="usertask1" name="usertask1" flowable:formFieldValidation="true"></userTask>
+        <sequenceFlow id="start-usertask1" sourceRef="Start" targetRef="usertask1"></sequenceFlow>
+        <userTask id="usertask2" name="usertask2" flowable:formFieldValidation="true"></userTask>
+        <endEvent id="end" name="结束"></endEvent>
+        <sequenceFlow id="usertask2-end" sourceRef="usertask2" targetRef="end"></sequenceFlow>
+        <subProcess id="subprocess" name="subprocess">
+            <startEvent id="substart" flowable:formFieldValidation="true"></startEvent>
+            <serviceTask id="subservicetask1" name="subservicetask1" flowable:class="org.flowable.CallExternalSystemDelegate"></serviceTask>
+            <userTask id="subusertask1" name="subusertask1" flowable:formFieldValidation="true"></userTask>
+            <endEvent id="subend"></endEvent>
+            <sequenceFlow id="subusertask1-subend" sourceRef="subusertask1" targetRef="subend"></sequenceFlow>
+            <sequenceFlow id="substart-subservicetask1" sourceRef="substart" targetRef="subservicetask1"></sequenceFlow>
+            <sequenceFlow id="subservicetask1-subusertask1" sourceRef="subservicetask1" targetRef="subusertask1"></sequenceFlow>
+        </subProcess>
+        <sequenceFlow id="sid-81152AB3-A7B7-4FBB-B83A-A7AA726A448D" sourceRef="usertask1" targetRef="subprocess"></sequenceFlow>
+        <sequenceFlow id="sid-8CB3093A-815F-4433-9890-0163398C3D17" sourceRef="subprocess" targetRef="usertask2"></sequenceFlow>
+    </process>
+    <bpmndi:BPMNDiagram id="BPMNDiagram_XMSubProcessUS">
+        <bpmndi:BPMNPlane bpmnElement="XMSubProcessUS" id="BPMNPlane_XMSubProcessUS">
+            <bpmndi:BPMNShape bpmnElement="Start" id="BPMNShape_Start">
+                <omgdc:Bounds height="30.0" width="30.0" x="110.0" y="110.0"></omgdc:Bounds>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="usertask1" id="BPMNShape_usertask1">
+                <omgdc:Bounds height="60.0" width="100.0" x="190.0" y="95.0"></omgdc:Bounds>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="usertask2" id="BPMNShape_usertask2">
+                <omgdc:Bounds height="60.0" width="100.0" x="840.0" y="95.0"></omgdc:Bounds>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="end" id="BPMNShape_end">
+                <omgdc:Bounds height="28.0" width="28.0" x="990.0" y="110.0"></omgdc:Bounds>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="subprocess" id="BPMNShape_subprocess">
+                <omgdc:Bounds height="100.0" width="450.0" x="340.0" y="75.0"></omgdc:Bounds>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="substart" id="BPMNShape_substart">
+                <omgdc:Bounds height="30.0" width="30.0" x="360.0" y="110.0"></omgdc:Bounds>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="subservicetask1" id="BPMNShape_subservicetask1">
+                <omgdc:Bounds height="60.0" width="100.0" x="440.0" y="95.0"></omgdc:Bounds>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="subusertask1" id="BPMNShape_subusertask1">
+                <omgdc:Bounds height="60.0" width="100.0" x="590.0" y="95.0"></omgdc:Bounds>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="subend" id="BPMNShape_subend">
+                <omgdc:Bounds height="28.0" width="28.0" x="740.0" y="110.0"></omgdc:Bounds>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNEdge bpmnElement="start-usertask1" id="BPMNEdge_start-usertask1">
+                <omgdi:waypoint x="139.9499750044467" y="125.0"></omgdi:waypoint>
+                <omgdi:waypoint x="152.0" y="125.0"></omgdi:waypoint>
+                <omgdi:waypoint x="152.0" y="125.0"></omgdi:waypoint>
+                <omgdi:waypoint x="190.0" y="125.0"></omgdi:waypoint>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="subservicetask1-subusertask1" id="BPMNEdge_subservicetask1-subusertask1">
+                <omgdi:waypoint x="539.949999999998" y="125.0"></omgdi:waypoint>
+                <omgdi:waypoint x="552.0" y="125.0"></omgdi:waypoint>
+                <omgdi:waypoint x="552.0" y="125.0"></omgdi:waypoint>
+                <omgdi:waypoint x="590.0" y="125.0"></omgdi:waypoint>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="substart-subservicetask1" id="BPMNEdge_substart-subservicetask1">
+                <omgdi:waypoint x="389.94997500444674" y="125.0"></omgdi:waypoint>
+                <omgdi:waypoint x="402.0" y="125.0"></omgdi:waypoint>
+                <omgdi:waypoint x="402.0" y="125.0"></omgdi:waypoint>
+                <omgdi:waypoint x="440.0" y="125.0"></omgdi:waypoint>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="sid-81152AB3-A7B7-4FBB-B83A-A7AA726A448D" id="BPMNEdge_sid-81152AB3-A7B7-4FBB-B83A-A7AA726A448D">
+                <omgdi:waypoint x="289.95000000000005" y="125.0"></omgdi:waypoint>
+                <omgdi:waypoint x="302.0" y="125.0"></omgdi:waypoint>
+                <omgdi:waypoint x="302.0" y="125.00000000000003"></omgdi:waypoint>
+                <omgdi:waypoint x="340.0" y="125.00000000000001"></omgdi:waypoint>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="sid-8CB3093A-815F-4433-9890-0163398C3D17" id="BPMNEdge_sid-8CB3093A-815F-4433-9890-0163398C3D17">
+                <omgdi:waypoint x="789.9499999999064" y="125.0"></omgdi:waypoint>
+                <omgdi:waypoint x="802.0" y="125.0"></omgdi:waypoint>
+                <omgdi:waypoint x="802.0" y="125.0"></omgdi:waypoint>
+                <omgdi:waypoint x="840.0" y="125.0"></omgdi:waypoint>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="subusertask1-subend" id="BPMNEdge_subusertask1-subend">
+                <omgdi:waypoint x="689.949999999998" y="125.0"></omgdi:waypoint>
+                <omgdi:waypoint x="702.0" y="125.0"></omgdi:waypoint>
+                <omgdi:waypoint x="702.0" y="125.0"></omgdi:waypoint>
+                <omgdi:waypoint x="740.0025321198765" y="124.26822082569018"></omgdi:waypoint>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="usertask2-end" id="BPMNEdge_usertask2-end">
+                <omgdi:waypoint x="939.9499999999987" y="124.56140350877193"></omgdi:waypoint>
+                <omgdi:waypoint x="990.0005248012793" y="124.1223639291296"></omgdi:waypoint>
+            </bpmndi:BPMNEdge>
+        </bpmndi:BPMNPlane>
+    </bpmndi:BPMNDiagram>
+</definitions>
