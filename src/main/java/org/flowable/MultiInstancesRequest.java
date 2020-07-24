@@ -18,7 +18,7 @@ import java.util.*;
  */
 public class MultiInstancesRequest {
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException, InterruptedException {
         //creates the Process Engine using a memory-based h2 embedded database
         ProcessEngineConfiguration cfg =
                 new StandaloneProcessEngineConfiguration()
@@ -28,7 +28,8 @@ public class MultiInstancesRequest {
                         .setJdbcDriver("org.h2.Driver")
                         .setDatabaseSchemaUpdate(
                                 ProcessEngineConfiguration.DB_SCHEMA_UPDATE_TRUE)
-                        .setMailServerHost("mail.test.b2c.srv").setMailServerPort(25);
+                        .setMailServerHost("mail.test.b2c.srv").setMailServerPort(25)
+                .setAsyncExecutorActivate(true);
 
         ProcessEngine processEngine = cfg.buildProcessEngine();
 
@@ -65,7 +66,7 @@ public class MultiInstancesRequest {
         map.put("per", "bbb");
         map.put("money", "1111");
         map.put("assigneeList", Arrays.asList(v));
-        ProcessInstance pi = runtimeService.startProcessInstanceByKey("living",map);
+        ProcessInstance pi = runtimeService.startProcessInstanceByKey("living2",map);
 
         TaskService taskService = processEngine.getTaskService();
 
@@ -117,14 +118,14 @@ public class MultiInstancesRequest {
         HistoryService historyService = processEngine.getHistoryService();
         List<HistoricActivityInstance> activities ;
 
-
+        Thread.sleep(1000*120);
         List<Task> task2 = taskService.createTaskQuery().taskAssignee("shareniu5").list();
 
         System.out.println("shareniu5 tasks num = ? " + task2.size());
-
-        taskService.claim(task2.get(0).getId(),"shareniu5");
-        taskService.complete(task2.get(0).getId());
-
+        if(task2.size() > 0 ) {
+            taskService.claim(task2.get(0).getId(), "shareniu5");
+            taskService.complete(task2.get(0).getId());
+        }
 
         activities =
                 historyService.createHistoricActivityInstanceQuery()
@@ -145,7 +146,7 @@ public class MultiInstancesRequest {
         ProcessDiagram.genProcessDiagram(pi.getId(), processEngine,"file-muti.png");
 
 
-
+        System.exit(1);
 
 
 

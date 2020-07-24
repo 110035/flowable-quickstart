@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:flowable="http://flowable.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.flowable.org/processdef">
-    <process id="living" name="会签流程实例" isExecutable="true">
+    <process id="living2" name="会签流程实例" isExecutable="true">
         <documentation>测试flowable多实例</documentation>
         <startEvent id="Start" name="开始" flowable:formFieldValidation="true"></startEvent>
         <userTask id="UserTask1" name="会签用户任务1" flowable:candidateUsers="${assigneeList}" flowable:formFieldValidation="true">
             <multiInstanceLoopCharacteristics isSequential="false" flowable:collection="assigneeList" flowable:elementVariable="assignee">
-                <completionCondition>${nrOfCompletedInstances/nrOfInstances &gt;= 0.4}</completionCondition>
+                <completionCondition>${nrOfCompletedInstances/nrOfInstances &gt;= 0.8}</completionCondition>
             </multiInstanceLoopCharacteristics>
         </userTask>
         <userTask id="UserTask2" name="用户任务2" flowable:assignee="shareniu5" flowable:formFieldValidation="true">
@@ -14,12 +14,10 @@
                 <modeler:initiator-can-complete xmlns:modeler="http://flowable.org/modeler"><![CDATA[false]]></modeler:initiator-can-complete>
             </extensionElements>
         </userTask>
-        <sequenceFlow id="S-U1" sourceRef="Start" targetRef="UserTask1"></sequenceFlow>
-        <sequenceFlow id="U1-U2" sourceRef="UserTask1" targetRef="UserTask2"></sequenceFlow>
-        <sequenceFlow id="sid-D0E8F205-05EF-4218-BA51-4F07C3B6F2C9" sourceRef="UserTask2" targetRef="Send-Email"></sequenceFlow>
+        <sequenceFlow id="sid-D0E8F205-05EF-4218-BA51-4F07C3B6F2C9" sourceRef="UserTask2" targetRef="sid-50D7F747-7F6C-4F2B-BA8C-7578141F54B7"></sequenceFlow>
         <endEvent id="End" name="结束"></endEvent>
-        <sequenceFlow id="sid-0BD786DF-9AC5-4A0B-9522-059853162773" sourceRef="Send-Email" targetRef="End"></sequenceFlow>
-        <serviceTask id="Send-Email" flowable:type="mail" name="发送邮件通知">
+        <sequenceFlow id="sid-0BD786DF-9AC5-4A0B-9522-059853162773" sourceRef="sid-50D7F747-7F6C-4F2B-BA8C-7578141F54B7" targetRef="End"></sequenceFlow>
+        <serviceTask id="sid-50D7F747-7F6C-4F2B-BA8C-7578141F54B7" flowable:type="mail" name="发送邮件通知">
             <extensionElements>
                 <flowable:field name="from">
                     <flowable:string><![CDATA[134a1ab8c0efbe14884b9956321818e0@xiaomi.com]]></flowable:string>
@@ -38,9 +36,20 @@
                 </flowable:field>
             </extensionElements>
         </serviceTask>
+        <boundaryEvent id="sid-64802896-57BE-4C56-8EA9-5B4656AC89EA" attachedToRef="UserTask1" cancelActivity="false">
+            <timerEventDefinition>
+                <timeDuration>P0M</timeDuration>
+            </timerEventDefinition>
+        </boundaryEvent>
+        <sequenceFlow id="U1-U2" sourceRef="UserTask1" targetRef="UserTask2"></sequenceFlow>
+        <sequenceFlow id="S-U1" sourceRef="Start" targetRef="UserTask1"></sequenceFlow>
+        <sequenceFlow id="sid-576092FC-6A82-4B6A-8A76-98C81F24916F" sourceRef="sid-64802896-57BE-4C56-8EA9-5B4656AC89EA" targetRef="sid-F62DD32E-F5D5-48CB-933E-26E007DC0626"></sequenceFlow>
+        <endEvent id="Timeout" name="超时结束"></endEvent>
+        <sequenceFlow id="sid-2F24E073-4306-42B6-936B-B7C7B55A4364" sourceRef="sid-F62DD32E-F5D5-48CB-933E-26E007DC0626" targetRef="Timeout"></sequenceFlow>
+        <serviceTask id="sid-F62DD32E-F5D5-48CB-933E-26E007DC0626" name="超时结束任务" flowable:class="org.flowable.TimeoutDelegate"></serviceTask>
     </process>
-    <bpmndi:BPMNDiagram id="BPMNDiagram_living">
-        <bpmndi:BPMNPlane bpmnElement="living" id="BPMNPlane_living2">
+    <bpmndi:BPMNDiagram id="BPMNDiagram_living2">
+        <bpmndi:BPMNPlane bpmnElement="living2" id="BPMNPlane_living2">
             <bpmndi:BPMNShape bpmnElement="Start" id="BPMNShape_Start">
                 <omgdc:Bounds height="30.0" width="30.0" x="120.0" y="105.0"></omgdc:Bounds>
             </bpmndi:BPMNShape>
@@ -53,8 +62,17 @@
             <bpmndi:BPMNShape bpmnElement="End" id="BPMNShape_End">
                 <omgdc:Bounds height="28.0" width="28.0" x="640.0" y="106.0"></omgdc:Bounds>
             </bpmndi:BPMNShape>
-            <bpmndi:BPMNShape bpmnElement="Send-Email" id="BPMNShape_Send-Email">
+            <bpmndi:BPMNShape bpmnElement="sid-50D7F747-7F6C-4F2B-BA8C-7578141F54B7" id="BPMNShape_sid-50D7F747-7F6C-4F2B-BA8C-7578141F54B7">
                 <omgdc:Bounds height="80.0" width="100.0" x="495.0" y="80.0"></omgdc:Bounds>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="sid-64802896-57BE-4C56-8EA9-5B4656AC89EA" id="BPMNShape_sid-64802896-57BE-4C56-8EA9-5B4656AC89EA">
+                <omgdc:Bounds height="31.0" width="31.0" x="285.01687662082855" y="127.8154815173055"></omgdc:Bounds>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="Timeout" id="BPMNShape_Timeout">
+                <omgdc:Bounds height="28.0" width="28.0" x="395.51687662082855" y="251.0"></omgdc:Bounds>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="sid-F62DD32E-F5D5-48CB-933E-26E007DC0626" id="BPMNShape_sid-F62DD32E-F5D5-48CB-933E-26E007DC0626">
+                <omgdc:Bounds height="80.0" width="100.0" x="250.51687662082855" y="225.0"></omgdc:Bounds>
             </bpmndi:BPMNShape>
             <bpmndi:BPMNEdge bpmnElement="S-U1" id="BPMNEdge_S-U1">
                 <omgdi:waypoint x="149.9499750044467" y="120.0"></omgdi:waypoint>
@@ -66,9 +84,17 @@
                 <omgdi:waypoint x="449.95000000000005" y="120.0"></omgdi:waypoint>
                 <omgdi:waypoint x="494.9999999999252" y="120.0"></omgdi:waypoint>
             </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="sid-576092FC-6A82-4B6A-8A76-98C81F24916F" id="BPMNEdge_sid-576092FC-6A82-4B6A-8A76-98C81F24916F">
+                <omgdi:waypoint x="300.9508621377281" y="159.76534862870207"></omgdi:waypoint>
+                <omgdi:waypoint x="300.68170790662396" y="225.0"></omgdi:waypoint>
+            </bpmndi:BPMNEdge>
             <bpmndi:BPMNEdge bpmnElement="sid-0BD786DF-9AC5-4A0B-9522-059853162773" id="BPMNEdge_sid-0BD786DF-9AC5-4A0B-9522-059853162773">
                 <omgdi:waypoint x="594.9499999999791" y="120.0"></omgdi:waypoint>
                 <omgdi:waypoint x="640.0" y="120.0"></omgdi:waypoint>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="sid-2F24E073-4306-42B6-936B-B7C7B55A4364" id="BPMNEdge_sid-2F24E073-4306-42B6-936B-B7C7B55A4364">
+                <omgdi:waypoint x="350.46687662076255" y="265.0"></omgdi:waypoint>
+                <omgdi:waypoint x="395.51687662082855" y="265.0"></omgdi:waypoint>
             </bpmndi:BPMNEdge>
             <bpmndi:BPMNEdge bpmnElement="U1-U2" id="BPMNEdge_U1-U2">
                 <omgdi:waypoint x="299.95000000000005" y="120.0"></omgdi:waypoint>
